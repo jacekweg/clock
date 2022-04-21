@@ -1,62 +1,60 @@
-function App() {
+import React, { useState } from "react";
+import Session from "./components/Session";
+import Break from "./components/Break";
+import Timer from "./components/Timer";
+import TimerController from "./components/TimerController";
+
+const App = () => {
+  const [running, setRunning] = useState(false);
+  const [minutes, setMinutes] = useState(25);
+  const [seconds, setSeconds] = useState(0);
+  const [sessionLen, setSessionLen] = useState(25);
+  const [breakLen, setBreakLen] = useState(5);
+
+  const handleIncrement = (e) => {
+    if (e.target.value === "session") {
+      setMinutes((minutes) => (minutes === 60 ? 60 : minutes + 1));
+      setSessionLen((sessionLen) => (sessionLen === 60 ? 60 : sessionLen + 1));
+    } else {
+      setBreakLen((breakLen) => (breakLen === 60 ? 60 : breakLen + 1));
+    }
+  };
+
+  const handleDecrement = (e) => {
+    if (e.target.value === "session") {
+      setMinutes(minutes === 60 ? 60 : minutes - 1);
+      setSessionLen((sessionLen) => (sessionLen === 1 ? 1 : sessionLen - 1));
+    } else {
+      setBreakLen((breakLen) => (breakLen === 1 ? 1 : breakLen - 1));
+    }
+  };
+
+  const handleReset = () => {
+    if (sessionLen !== 25) setSessionLen(25);
+    if (breakLen !== 5) setBreakLen(5);
+    setMinutes(25);
+    setSeconds(0);
+    if (running === true) setRunning(false);
+  };
+
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 py-2 px-4 border-4 border-black">
       <div className="grid grid-cols-4 grid-rows-6 gap-1">
-        <h1
-          id="session-label"
-          className="text-4xl font-bold underline col-span-2 text-center"
-        >
-          Session Length
-        </h1>
-        <h1
-          id="break-label"
-          className="text-4xl font-bold underline col-span-2 text-center"
-        >
-          Break Length
-        </h1>
-
-        <button id="session-increment" className="btn-blue">
-          Increment
-        </button>
-        <button id="session-decrement" className="btn-blue">
-          Decrement
-        </button>
-        <button id="break-increment" className="btn-blue">
-          Increment
-        </button>
-        <button id="break-decrement" className="btn-blue">
-          Decrement
-        </button>
-        <p
-          id="session-length"
-          className="text-2xl font-bold col-span-2 text-center"
-        >
-          25
-        </p>
-        <p
-          id="break-length"
-          className="text-2xl font-bold col-span-2 text-center"
-        >
-          5
-        </p>
-        <h1
-          id="timer-label"
-          className="text-3xl text-center font-bold col-span-4"
-        >
-          Session
-        </h1>
-        <p id="time-left" className="text-2xl text-center font-bold col-span-4">
-          25:00
-        </p>
-        <button id="start_stop" className="btn-blue col-span-2">
-          Start/Stop
-        </button>
-        <button id="reset" className="btn-blue col-span-2">
-          Reset
-        </button>
+        <Session
+          length={sessionLen}
+          increment={handleIncrement}
+          decrement={handleDecrement}
+        />
+        <Break
+          length={breakLen}
+          increment={handleIncrement}
+          decrement={handleDecrement}
+        />
+        <Timer minutes={minutes} seconds={seconds} />
+        <TimerController reset={handleReset} />
       </div>
     </div>
   );
-}
+};
 
 export default App;
