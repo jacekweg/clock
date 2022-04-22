@@ -10,6 +10,7 @@ const App = () => {
   const [seconds, setSeconds] = useState(0);
   const [sessionLen, setSessionLen] = useState(25);
   const [breakLen, setBreakLen] = useState(5);
+  const [timerType, setTimerType] = useState("Session");
 
   useEffect(() => {
     let interval = null;
@@ -17,10 +18,19 @@ const App = () => {
       interval = setInterval(() => {
         if (seconds === 0) {
           setMinutes((minutes) => (minutes === 0 ? 0 : minutes - 1));
+
           if (minutes !== 0) {
             setSeconds(59);
           } else {
             setSeconds(0);
+            if (timerType === "Session") {
+              setMinutes(breakLen);
+              setTimerType("Break");
+            }
+            if (timerType === "Break") {
+              setMinutes(sessionLen);
+              setTimerType("Session");
+            }
           }
         }
         if (seconds !== 0) {
@@ -33,23 +43,36 @@ const App = () => {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [running, minutes, seconds]);
+  }, [running, minutes, seconds, timerType, breakLen, sessionLen]);
 
   const handleIncrement = (e) => {
     if (e.target.value === "session") {
-      setMinutes((minutes) => (minutes === 60 ? 60 : minutes + 1));
-      setSessionLen((sessionLen) => (sessionLen === 60 ? 60 : sessionLen + 1));
-    } else {
-      setBreakLen((breakLen) => (breakLen === 60 ? 60 : breakLen + 1));
+      if (timerType === "Session")
+        setMinutes((minutes) => (minutes + 1 > 60 ? 60 : minutes + 1));
+
+      setSessionLen((sessionLen) =>
+        sessionLen + 1 > 60 ? 60 : sessionLen + 1
+      );
+    }
+    if (e.target.value === "break") {
+      if (timerType === "Break")
+        setMinutes(minutes + 1 > 60 ? 60 : minutes + 1);
+
+      setBreakLen((breakLen) => (breakLen + 1 > 60 ? 60 : breakLen + 1));
     }
   };
 
   const handleDecrement = (e) => {
     if (e.target.value === "session") {
-      setMinutes(minutes === 1 ? 1 : minutes - 1);
-      setSessionLen((sessionLen) => (sessionLen === 1 ? 1 : sessionLen - 1));
-    } else {
-      setBreakLen((breakLen) => (breakLen === 1 ? 1 : breakLen - 1));
+      if (timerType === "Session")
+        setMinutes(minutes - 1 < 1 ? 1 : minutes - 1);
+
+      setSessionLen((sessionLen) => (sessionLen - 1 < 1 ? 1 : sessionLen - 1));
+    }
+    if (e.target.value === "break") {
+      if (timerType === "Break") setMinutes(minutes - 1 < 1 ? 1 : minutes - 1);
+
+      setBreakLen((breakLen) => (breakLen - 1 < 1 ? 1 : breakLen - 1));
     }
   };
 
@@ -59,6 +82,7 @@ const App = () => {
     if (minutes !== 25) setMinutes(25);
     if (seconds !== 0) setSeconds(0);
     if (running !== false) setRunning(false);
+    if (timerType !== "Session") setTimerType("Session");
   };
 
   const handleStartStop = () => {
@@ -78,7 +102,7 @@ const App = () => {
           increment={handleIncrement}
           decrement={handleDecrement}
         />
-        <Timer minutes={minutes} seconds={seconds} />
+        <Timer minutes={minutes} seconds={seconds} type={timerType} />
         <TimerController reset={handleReset} toggle={handleStartStop} />
       </div>
     </div>

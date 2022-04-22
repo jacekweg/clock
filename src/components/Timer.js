@@ -7,7 +7,7 @@ const Timer = (props) => {
         id="timer-label"
         className="text-3xl text-center font-bold col-span-4"
       >
-        Session
+        {props.type}
       </h1>
       <time
         id="time-left"
