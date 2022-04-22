@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Session from "./components/Session";
 import Break from "./components/Break";
 import Timer from "./components/Timer";
@@ -11,11 +11,17 @@ const App = () => {
   const [sessionLen, setSessionLen] = useState(25);
   const [breakLen, setBreakLen] = useState(5);
   const [timerType, setTimerType] = useState("Session");
+  const beep = useRef(null);
 
   useEffect(() => {
     let interval = null;
     if (running) {
       interval = setInterval(() => {
+        if (minutes === 0 && seconds === 1) {
+          beep.current.currentTime = 0;
+          beep.current.play();
+        }
+
         if (seconds === 0) {
           setMinutes((minutes) => (minutes === 0 ? 0 : minutes - 1));
 
@@ -83,6 +89,8 @@ const App = () => {
     if (seconds !== 0) setSeconds(0);
     if (running !== false) setRunning(false);
     if (timerType !== "Session") setTimerType("Session");
+    beep.current.pause();
+    beep.current.currentTime = 0;
   };
 
   const handleStartStop = () => {
@@ -102,7 +110,12 @@ const App = () => {
           increment={handleIncrement}
           decrement={handleDecrement}
         />
-        <Timer minutes={minutes} seconds={seconds} type={timerType} />
+        <Timer
+          minutes={minutes}
+          seconds={seconds}
+          type={timerType}
+          beep={beep}
+        />
         <TimerController reset={handleReset} toggle={handleStartStop} />
       </div>
     </div>

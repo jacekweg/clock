@@ -16,6 +16,11 @@ const Timer = (props) => {
         {props.minutes < 10 ? "0" + props.minutes : props.minutes}:
         {props.seconds < 10 ? "0" + props.seconds : props.seconds}
       </time>
+      <audio
+        id="beep"
+        src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+        ref={props.beep}
+      ></audio>
     </>
   );
 };
