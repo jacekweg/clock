@@ -1,4 +1,6 @@
-function Break(props) {
+import React from "react";
+
+const Break = (props) => {
   return (
     <>
       <h1
@@ -32,6 +34,6 @@ function Break(props) {
       </p>
     </>
   );
-}
+};
 
 export default Break;

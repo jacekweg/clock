@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Session from "./components/Session";
 import Break from "./components/Break";
 import Timer from "./components/Timer";
@@ -11,6 +11,30 @@ const App = () => {
   const [sessionLen, setSessionLen] = useState(25);
   const [breakLen, setBreakLen] = useState(5);
 
+  useEffect(() => {
+    let interval = null;
+    if (running) {
+      interval = setInterval(() => {
+        if (seconds === 0) {
+          setMinutes((minutes) => (minutes === 0 ? 0 : minutes - 1));
+          if (minutes !== 0) {
+            setSeconds(59);
+          } else {
+            setSeconds(0);
+          }
+        }
+        if (seconds !== 0) {
+          setSeconds((seconds) => seconds - 1);
+        }
+      }, 1000);
+    }
+
+    if (!running) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [running, minutes, seconds]);
+
   const handleIncrement = (e) => {
     if (e.target.value === "session") {
       setMinutes((minutes) => (minutes === 60 ? 60 : minutes + 1));
@@ -22,7 +46,7 @@ const App = () => {
 
   const handleDecrement = (e) => {
     if (e.target.value === "session") {
-      setMinutes(minutes === 60 ? 60 : minutes - 1);
+      setMinutes(minutes === 1 ? 1 : minutes - 1);
       setSessionLen((sessionLen) => (sessionLen === 1 ? 1 : sessionLen - 1));
     } else {
       setBreakLen((breakLen) => (breakLen === 1 ? 1 : breakLen - 1));
@@ -32,9 +56,13 @@ const App = () => {
   const handleReset = () => {
     if (sessionLen !== 25) setSessionLen(25);
     if (breakLen !== 5) setBreakLen(5);
-    setMinutes(25);
-    setSeconds(0);
-    if (running === true) setRunning(false);
+    if (minutes !== 25) setMinutes(25);
+    if (seconds !== 0) setSeconds(0);
+    if (running !== false) setRunning(false);
+  };
+
+  const handleStartStop = () => {
+    setRunning((running) => !running);
   };
 
   return (
@@ -51,7 +79,7 @@ const App = () => {
           decrement={handleDecrement}
         />
         <Timer minutes={minutes} seconds={seconds} />
-        <TimerController reset={handleReset} />
+        <TimerController reset={handleReset} toggle={handleStartStop} />
       </div>
     </div>
   );

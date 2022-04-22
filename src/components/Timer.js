@@ -1,4 +1,6 @@
-function Timer(props) {
+import React from "react";
+
+const Timer = (props) => {
   return (
     <>
       <h1
@@ -16,6 +18,6 @@ function Timer(props) {
       </time>
     </>
   );
-}
+};
 
 export default Timer;

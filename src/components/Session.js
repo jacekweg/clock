@@ -1,4 +1,6 @@
-function Session(props) {
+import React from "react";
+
+const Session = (props) => {
   return (
     <>
       <h1
@@ -31,6 +33,6 @@ function Session(props) {
       </p>
     </>
   );
-}
+};
 
 export default Session;
