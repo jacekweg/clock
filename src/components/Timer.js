@@ -5,13 +5,13 @@ const Timer = (props) => {
     <>
       <h1
         id="timer-label"
-        className="text-3xl text-center font-bold col-span-4"
+        className="text-base md:text-3xl text-center font-bold col-span-4"
       >
         {props.type}
       </h1>
       <time
         id="time-left"
-        className="text-2xl text-center font-bold col-span-4"
+        className="text-base md:text-2xl text-center font-bold col-span-4"
       >
         {props.minutes < 10 ? "0" + props.minutes : props.minutes}:
         {props.seconds < 10 ? "0" + props.seconds : props.seconds}
